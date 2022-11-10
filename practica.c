@@ -20,16 +20,19 @@ void main(int argc, char** argv){
 	int glovaltime=0;
 	int numfallos=0;
 	unsigned char Simul_Ram[4096];
+	//unsigned char mem[][];
 	int i=0;
+	T_LINEA_CACHE tbl[NUM_FILAS];
 	FILE *fd;
 
+	limpiaCACHE(tbl);
 
 	fd=fopen("CONTENTS_RAM.bin","r");
         printf("%p",fd);
         if(fd==NULL){
-                printf("Error, el archivo no existe");
+                printf("Error, el archivo no existe\n");
         }else{
-                printf("el archivo existe");
+                printf("el archivo existe\n");
 
 
                 while(!feof(fd)){
@@ -53,5 +56,16 @@ void main(int argc, char** argv){
 		printf("el archivo existe");
 
 		fclose(fd);
+	}
+}
+
+
+void limpiaCACHE(T_LINEA_CACHE tbl[NUM_FILAS]){
+
+	for(int i=0; i<NUM_FILAS; i++){
+		tbl[i].ETQ=0xFF;
+		for(int j=0; j<TAM_LINEA; j++){
+			tbl[i].Data[j]=0x23;
+		}
 	}
 }
