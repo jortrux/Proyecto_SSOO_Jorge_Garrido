@@ -20,10 +20,9 @@ void main(int argc, char** argv){
 	int glovaltime=0;
 	int numfallos=0;
 	unsigned char Simul_Ram[4096];
-	//unsigned char **mem;
 	int i=0;
+	int *addr;
 	int ETQ, palabra, linea, bloque;
-	unsigned int *addr;
 
 	T_LINEA_CACHE tbl[NUM_FILAS];
 	FILE *fd;
@@ -32,8 +31,8 @@ void main(int argc, char** argv){
 	limpiaCACHE(tbl);//paso a los valores por defectos al empezar la ejecuvion+|
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-	fd=fopen("CONTENTS_RAM.bin","r");//abro contents ram
 
+	fd=fopen("CONTENTS_RAM.bin","r");//abro contents ram
 
         if(fd==NULL){
                 printf("Error, el archivo no existe\n");
@@ -43,6 +42,8 @@ void main(int argc, char** argv){
                 while(!feof(fd)){
                        	Simul_Ram[i]= fgetc(fd);
 			i++;
+
+			parsearAddr(addr[i],&ETQ,&palabra, &linea, &bloque);
         	}
 
                 fclose(fd);
@@ -53,12 +54,22 @@ void main(int argc, char** argv){
 	fd=fopen("accesos_memoria.txt","r");//abro accesos a memoria
 	printf("%p",fd);
 	if(fd==NULL){
-		printf("Error, el archivo no existe");
+		printf("Error, el archivo no existe\n");
 	}else{
+		int Hex;
+		printf("el archivo existe\n");
+		while((fscanf(fd,"%X",&Hex)!=EOF)){
+                        parsearAddr(Hex,&ETQ,&palabra, &linea, &bloque);
+			glovaltime++;
 
-		printf("el archivo existe");
-
-		fclose(fd);
+			//fallos
+                	if(ETQ!=tbl[i].ETQ){
+                	        numfallos++;
+        	                TratarFallo(tbl, Simul_Ram, ETQ,linea,bloque);
+	                }
+		i++;
+                }
+                fclose(fd);
 	}
 }
 
@@ -67,9 +78,12 @@ void limpiaCACHE(T_LINEA_CACHE tbl[NUM_FILAS]){
 
 	for(int i=0; i<NUM_FILAS; i++){//recorro los arrays para poner los valores por defecto
 		tbl[i].ETQ=0xFF;
+		printf("ETQ:FF\tData ");
 		for(int j=0; j<TAM_LINEA; j++){
 			tbl[i].Data[j]=0x23;
+			printf("%i ",tbl[i].Data[j]);
 		}
+		printf("\n");
 	}
 }
 
@@ -107,4 +121,4 @@ void parsearAddr(unsigned int addr, int *ETQ, int *palabra, int *linea, int *blo
 	*ETQ = (*bloque & 0b11111000)>>3;
 }
 
-
+void TratarFallo(T_LINEA_CACHE *tbl, char *MRAM, int ETQ, int linea, int bloque);
