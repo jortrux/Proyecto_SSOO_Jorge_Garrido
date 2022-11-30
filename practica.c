@@ -16,9 +16,11 @@ void VuelcaCACHE(T_LINEA_CACHE *tbl);
 void parsearAddr(unsigned int addr, int *ETQ, int *palabra, int *linea, int *bloque);
 void TratarFallo(T_LINEA_CACHE *tbl, char *MRAM, int ETQ, int linea, int bloque);
 
+int globaltime=0;
+
 void main(int argc, char** argv){
-	int glovaltime=0;
-	int numfallos=0;
+
+        int numfallos=0;
 	unsigned char Simul_Ram[4096];
 	int i=0;
 	int *addr;
@@ -38,12 +40,11 @@ void main(int argc, char** argv){
                 printf("Error, el archivo no existe\n");
         }else{
                 printf("el archivo existe\n");
-
+		i=0;
                 while(!feof(fd)){
-                       	Simul_Ram[i]= fgetc(fd);
+//			printf("core\n");
+                       	Simul_Ram[i]=fgetc(fd);//se me habia olvidado cambiar lo de parsear de aqui
 			i++;
-
-			parsearAddr(addr[i],&ETQ,&palabra, &linea, &bloque);
         	}
 
                 fclose(fd);
@@ -56,21 +57,25 @@ void main(int argc, char** argv){
 	if(fd==NULL){
 		printf("Error, el archivo no existe\n");
 	}else{
+		i=0;
 		int Hex;
 		printf("el archivo existe\n");
 		while((fscanf(fd,"%X",&Hex)!=EOF)){
                         parsearAddr(Hex,&ETQ,&palabra, &linea, &bloque);
-			glovaltime++;
+			globaltime++;
 
 			//fallos
                 	if(ETQ!=tbl[i].ETQ){
                 	        numfallos++;
+//				printf("no hay core\n");
         	                TratarFallo(tbl, Simul_Ram, ETQ,linea,bloque);
+//				printf("si hay core\n");
 	                }
 		i++;
                 }
                 fclose(fd);
 	}
+	VuelcaCACHE(tbl);//MIERDA LA HE LIADO JODEEERRRR
 }
 
 
@@ -99,10 +104,11 @@ void VuelcaCACHE(T_LINEA_CACHE *tbl){
 		for(int i=0; i<NUM_FILAS; i++){
 			fputc(tbl[i].ETQ, Ch);
 			fputc('\n',Ch);
-
+			printf("%c",tbl[i].ETQ);
 			for(int j=0; j<TAM_LINEA; j++){
         	                fputc(tbl[i].Data[j], Ch);
 				fputc('\n', Ch);
+				printf("%c",tbl[i].Data[j]);
 	                }
 		}
 
@@ -115,10 +121,19 @@ void parsearAddr(unsigned int addr, int *ETQ, int *palabra, int *linea, int *blo
 //https://www.tutorialspoint.com/cprogramming/c_operators.htm
 
 //esto lo he plagiado porque no soy capaz de entenderlo por completo al 100%
+//si me da tiempo lo hare de otra forma que tengo pensada, pero no se si podre
 	*palabra = addr & 0b1111;
 	*bloque = addr >> 4;
 	*linea = (*bloque & 0b111);
 	*ETQ = (*bloque & 0b11111000)>>3;
 }
 
-void TratarFallo(T_LINEA_CACHE *tbl, char *MRAM, int ETQ, int linea, int bloque);
+void TratarFallo(T_LINEA_CACHE *tbl, char *MRAM, int ETQ, int linea, int bloque){
+	globaltime=globaltime+10;
+	int inicio=0;
+	inicio=bloque*16;
+	tbl[linea].ETQ=ETQ;
+	for(int i=0; i<16; i++){//16=tam bloque
+		tbl[linea].Data[i]=MRAM[i+inicio];
+	}
+}
