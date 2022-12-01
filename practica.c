@@ -70,6 +70,16 @@ void main(int argc, char** argv){
 //				printf("no hay core\n");
         	                TratarFallo(tbl, Simul_Ram, ETQ,linea,bloque);
 //				printf("si hay core\n");
+
+				for(int i=0; i<NUM_FILAS; i++){//a cimprobar que coño estoy haciendo jejejej
+        	        		printf("ETQ:FF\tData ");
+                			for(int j=0; j<TAM_LINEA; j++){
+                	        		printf("%i ",tbl[i].Data[j]);
+        	        		}
+	                		printf("\n");
+        			}
+				printf("\n\n");
+				sleep(1);
 	                }
 		i++;
                 }
