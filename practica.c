@@ -48,47 +48,47 @@ void main(int argc, char** argv){
         	}
 
                 fclose(fd);
+		        //printf("%s\n",Simul_Ram);
+
+        	fd=fopen("accesos_memoria.txt","r");//abro accesos a memoria
+	        printf("%p",fd);
+        	if(fd==NULL){
+	                printf("Error, el archivo no existe\n");
+        	}else{
+	                i=0;
+        	        int Hex;
+//              	printf("el archivo existe\n");
+                	while((fscanf(fd,"%X",&Hex)!=EOF)){
+                	        parsearAddr(Hex,&ETQ,&palabra, &linea, &bloque);
+                	        globaltime++;
+
+                	        //fallos
+                        	if(ETQ!=tbl[linea].ETQ){//COÑO en la linea no en cada iteracion, mea culpa
+                                	numfallos++;
+                                	printf("ha habido un fallo (%i)\n",numfallos);
+					printf("T: %i, Fallo de CACHE %i, ADDR %X ETQ %X linea %X palabra %X bloque %X\n", globaltime, numfallos,Hex,ETQ,linea,palabra,bloque);
+//                              	printf("no hay core\n");
+                                	TratarFallo(tbl, Simul_Ram, ETQ,linea,bloque);
+//                              	printf("si hay core\n");
+                        	}
+				printf("T: %i, Acierto de CACHE, ADDR %X ETQ %X linea %X palabra %X bloque %X DATO %X\n", globaltime, Hex, ETQ, linea, palabra, bloque, tbl[linea].Data[palabra]);
+        	        	for(int i=0; i<NUM_FILAS; i++){//a cimprobar que coño estoy haciendo jejejej
+	                                printf("ETQ:%X\tData ",tbl[i].ETQ);
+                                        for(int j=0; j<TAM_LINEA; j++){
+         	                               printf("%X ",tbl[i].Data[j]);
+      	                                }
+                                        printf("\n");
+                                }
+       	                        printf("\n\n");
+               	                sleep(1);
+				i++;
+                	}
+                	fclose(fd);
+        	}
+        	printf("Accesos totales: %i; fallos: %i; tiempo medio: %f\n",i, numfallos, (float)globaltime/i);
+        	printf("Texto leido: %s\n\n", tbl[linea].Data);
+        	VuelcaCACHE(tbl);
         }
-
-	//printf("%s\n",Simul_Ram);
-
-	fd=fopen("accesos_memoria.txt","r");//abro accesos a memoria
-	printf("%p",fd);
-	if(fd==NULL){
-		printf("Error, el archivo no existe\n");
-	}else{
-		i=0;
-		int Hex;
-//		printf("el archivo existe\n");
-		while((fscanf(fd,"%X",&Hex)!=EOF)){
-                        parsearAddr(Hex,&ETQ,&palabra, &linea, &bloque);
-			globaltime++;
-
-			//fallos
-                	if(ETQ!=tbl[linea].ETQ){//COÑO en la linea no en cada iteracion, mea culpa
-                	        numfallos++;
-				printf("ha habido un fallo (%i)\n",numfallos);
-//				printf("no hay core\n");
-        	                TratarFallo(tbl, Simul_Ram, ETQ,linea,bloque);
-//				printf("si hay core\n");
-
-				for(int i=0; i<NUM_FILAS; i++){//a cimprobar que coño estoy haciendo jejejej
-        	        		printf("ETQ:%X\tData ",tbl[i].ETQ);
-                			for(int j=0; j<TAM_LINEA; j++){
-                	        		printf("%i ",tbl[i].Data[j]);
-        	        		}
-	                		printf("\n");
-        			}
-				printf("\n\n");
-				sleep(1);
-	                }
-		i++;
-                }
-                fclose(fd);
-	}
-	printf("Accesos totales: %i; fallos: %i; tiempo medio: %f\n",i, numfallos, (float)globaltime/i);
-	printf("Texto leido: %s\n\n", tbl[linea].Data);
-	VuelcaCACHE(tbl);//MIERDA LA HE LIADO JODEEERRRR
 }
 
 
