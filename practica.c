@@ -39,7 +39,7 @@ void main(int argc, char** argv){
         if(fd==NULL){
                 printf("Error, el archivo no existe\n");
         }else{
-                printf("el archivo existe\n");
+//                printf("el archivo existe\n");
 		i=0;
                 while(!feof(fd)){
 //			printf("core\n");
@@ -59,14 +59,15 @@ void main(int argc, char** argv){
 	}else{
 		i=0;
 		int Hex;
-		printf("el archivo existe\n");
+//		printf("el archivo existe\n");
 		while((fscanf(fd,"%X",&Hex)!=EOF)){
                         parsearAddr(Hex,&ETQ,&palabra, &linea, &bloque);
 			globaltime++;
 
 			//fallos
-                	if(ETQ!=tbl[i].ETQ){
+                	if(ETQ!=tbl[linea].ETQ){//COÑO en la linea no en cada iteracion, mea culpa
                 	        numfallos++;
+				printf("ha habido un fallo (%i)\n",numfallos);
 //				printf("no hay core\n");
         	                TratarFallo(tbl, Simul_Ram, ETQ,linea,bloque);
 //				printf("si hay core\n");
@@ -85,6 +86,8 @@ void main(int argc, char** argv){
                 }
                 fclose(fd);
 	}
+	printf("Accesos totales: %i; fallos: %i; tiempo medio: %f\n",i, numfallos, (float)globaltime/i);
+	printf("Texto leido: %s\n\n", tbl[linea].Data);
 	VuelcaCACHE(tbl);//MIERDA LA HE LIADO JODEEERRRR
 }
 
@@ -109,12 +112,12 @@ void VuelcaCACHE(T_LINEA_CACHE *tbl){
 	if(Ch==NULL){
 		printf("error algo no va como debe\n");//redundante, si no existe se crea
 	}else{
-		printf("archivo abierto\n");
+//		printf("archivo abierto\n");
 
-		for(int i=0; i<NUM_FILAS; i++){
+		for(int i=0; i<NUM_FILAS; i++){//basicamente la funcion de limpiar cache, pero en lugar de limpiar guardo en un fichero
 			fputc(tbl[i].ETQ, Ch);
 			fputc('\n',Ch);
-			printf("%c",tbl[i].ETQ);
+			printf("%c",tbl[i].ETQ);//teoria, como es un putC me esta casteando los valores y por eso creo que esta mal
 			for(int j=0; j<TAM_LINEA; j++){
         	                fputc(tbl[i].Data[j], Ch);
 				fputc('\n', Ch);
