@@ -25,6 +25,7 @@ void main(int argc, char** argv){
 	int i=0;
 	int *addr;
 	int ETQ, palabra, linea, bloque;
+	char texto[100];
 
 	T_LINEA_CACHE tbl[NUM_FILAS];
 	FILE *fd;
@@ -80,13 +81,14 @@ void main(int argc, char** argv){
                                         printf("\n");
                                 }
        	                        printf("\n\n");
-               	                sleep(1);
+               	        	texto[i]=tbl[linea].Data[palabra];
+			        sleep(1);
 				i++;
                 	}
                 	fclose(fd);
         	}
         	printf("Accesos totales: %i; fallos: %i; tiempo medio: %f\n",i, numfallos, (float)globaltime/i);
-        	printf("Texto leido: %s\n\n", tbl[linea].Data);
+        	printf("Texto leido: %s\n\n",texto);
         	VuelcaCACHE(tbl);
         }
 }
