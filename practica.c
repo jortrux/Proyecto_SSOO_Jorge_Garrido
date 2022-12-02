@@ -73,7 +73,7 @@ void main(int argc, char** argv){
 //				printf("si hay core\n");
 
 				for(int i=0; i<NUM_FILAS; i++){//a cimprobar que coño estoy haciendo jejejej
-        	        		printf("ETQ:FF\tData ");
+        	        		printf("ETQ:%X\tData ",tbl[i].ETQ);
                 			for(int j=0; j<TAM_LINEA; j++){
                 	        		printf("%i ",tbl[i].Data[j]);
         	        		}
@@ -93,7 +93,7 @@ void main(int argc, char** argv){
 
 
 void limpiaCACHE(T_LINEA_CACHE tbl[NUM_FILAS]){
-
+	printf("Cache limpia\n");
 	for(int i=0; i<NUM_FILAS; i++){//recorro los arrays para poner los valores por defecto
 		tbl[i].ETQ=0xFF;
 		printf("ETQ:FF\tData ");
@@ -103,9 +103,11 @@ void limpiaCACHE(T_LINEA_CACHE tbl[NUM_FILAS]){
 		}
 		printf("\n");
 	}
+	printf("\n\n");
 }
 
 void VuelcaCACHE(T_LINEA_CACHE *tbl){
+	printf("\n\nVolcado a cache\n\n");
 	FILE *Ch;
 	Ch=fopen("CONTENTS_CACHE.bin","w+");
 
@@ -115,14 +117,16 @@ void VuelcaCACHE(T_LINEA_CACHE *tbl){
 //		printf("archivo abierto\n");
 
 		for(int i=0; i<NUM_FILAS; i++){//basicamente la funcion de limpiar cache, pero en lugar de limpiar guardo en un fichero
-			fputc(tbl[i].ETQ, Ch);
-			fputc('\n',Ch);
-			printf("%c",tbl[i].ETQ);//teoria, como es un putC me esta casteando los valores y por eso creo que esta mal
+		//mi teoria se ha probado como cierta, el %c si que casteaba los valores a char, por eso ahora es un fprintf() en lugar de un fputc()
+			printf("ETQ:%X\tData ",tbl[i].ETQ);
+			//fputc(tbl[i].ETQ, Ch);
+			fprintf(Ch,"ETQ:%X\tData ",tbl[i].ETQ);
 			for(int j=0; j<TAM_LINEA; j++){
-        	                fputc(tbl[i].Data[j], Ch);
-				fputc('\n', Ch);
-				printf("%c",tbl[i].Data[j]);
+//        	                fputc(tbl[i].Data[j], Ch);
+				fprintf(Ch,"%X ",tbl[i].Data[j]);
+				printf("%X ",tbl[i].Data[j]);
 	                }
+		printf("\n");
 		}
 
 		fclose(Ch);
