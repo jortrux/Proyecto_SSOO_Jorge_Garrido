@@ -22,6 +22,8 @@ bloq 8
 101110100101011/10^12=101,110100101011  (si hago el casteo a int se desprecian los decimales y la etiqueta seria 101)
 101110100101011/10^4=10111010010,1011 (etiqueta+bloque y palabra en decimal, se desprecia, le resto etiqueta*10^8 para que solo queden los 8 bits de bloque)
 y luego lo mismo con palabra que seria los 15 bits menos los 11 de bloque mas etiqueta pero multiplicado por 10^4 para que al hacer la resta solo queden los ultimos 4 bits
+una vez tengo esos numeros por separados los mandaria a una funcion auxiliar (que tambien habia que utilizar para el casteo de decimal a binario) para hacer otro casteo a decimal y que asi los valores de etiqueta bloque y palabra correspondiesen con la traduccion a decimal de esos segmentos
+(esto ultimo es un planteamiento que tengo para la funcion parseardireccion que espero que me de tiempo a implementar de esta forma en lugar de la que uso actualmente)
 
 a ver si me da tiempo a implementarlo sin errores
 
