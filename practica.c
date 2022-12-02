@@ -128,6 +128,7 @@ void VuelcaCACHE(T_LINEA_CACHE *tbl){
 				fprintf(Ch,"%X ",tbl[i].Data[j]);
 				printf("%X ",tbl[i].Data[j]);
 	                }
+		fputc('\n',Ch);
 		printf("\n");
 		}
 
